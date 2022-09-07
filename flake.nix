@@ -3,8 +3,9 @@
 
   # Nixpkgs / NixOS version to use.
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05"; # We could use nixos-unstable but.. why ?
+  inputs.devshell.url = "github:numtide/devshell";
 
-  outputs = { self, nixpkgs }:
+  outputs = { self, nixpkgs, devshell }:
     let
 
       # Generate a user-friendly version number.
@@ -23,6 +24,10 @@
         config = {
           allowBroken = true;
         };
+        overlays = [
+          devshell.overlay
+          # self.overlay
+        ];
       });
 
     in
@@ -66,20 +71,13 @@
       # package.
       defaultPackage = forAllSystems (system: self.packages.${system}.operator-tool);
 
-      devShell = forAllSystems (system:
-        let
-          pkgs = nixpkgsFor.${system};
-        in
-        pkgs.mkShell {
-          buildInputs = [
-            pkgs.go_1_17
-            pkgs.gotools
-            pkgs.golangci-lint
-            pkgs.gopls
-            pkgs.go-outline
-            pkgs.gopkgs
-          ];
-        });
+      devShell = forAllSystems
+        (system:
+          let
+            pkgs = nixpkgsFor.${system};
+          in
+          import ./devshell.nix { inherit pkgs; }
+        );
     };
 }
 # }
