@@ -39,10 +39,12 @@ func generateUpstreamSources(filename string) error {
 		return err
 	}
 	us := &upstream_sources{Sources: []source{}}
-	for name, component := range components {
-		fmt.Println("component", name, component)
+	for _, component := range components {
 		url := "https://github.com/" + component.Github
 		branch := component.Version
+		if branch == "nightly" {
+			branch = "main" // FIXME: we may want to use remote head here… but today we assume it's main
+		}
 		commit := ""
 
 		rem := git.NewRemote(memory.NewStorage(), &gitconfig.RemoteConfig{
@@ -54,10 +56,10 @@ func generateUpstreamSources(filename string) error {
 			return err
 		}
 		for _, r := range refs {
-			if !r.Name().IsTag() {
+			if !r.Name().IsTag() && !r.Name().IsBranch() {
 				continue
 			}
-			if r.Name().Short() == component.Version {
+			if r.Name().Short() == branch {
 				commit = r.Hash().String()
 				break
 			}
