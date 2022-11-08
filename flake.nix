@@ -77,6 +77,10 @@
             nixpkgs-fmt.enable = true;
             nix-linter.enable = true;
             statix.enable = true;
+
+            # go
+            revive.enable = true;
+            govet.enable = true;
           };
         };
       });
