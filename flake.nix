@@ -3,9 +3,9 @@
 
   # Nixpkgs / NixOS version to use.
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05"; # We could use nixos-unstable but.. why ?
-  inputs.devshell.url = "github:numtide/devshell";
+  inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
 
-  outputs = { self, nixpkgs, devshell }:
+  outputs = { self, nixpkgs, pre-commit-hooks }:
     let
 
       # Generate a user-friendly version number.
@@ -25,7 +25,6 @@
           allowBroken = true;
         };
         overlays = [
-          devshell.overlay
           # self.overlay
         ];
       });
@@ -39,7 +38,7 @@
           pkgs = nixpkgsFor.${system};
         in
         {
-          operator-tool = pkgs.buildGo117Module {
+          operator-tool = pkgs.buildGo118Module {
             pname = "operator-tool";
             inherit version;
             # In 'nix develop', we don't need a copy of the source tree
@@ -71,13 +70,38 @@
       # package.
       defaultPackage = forAllSystems (system: self.packages.${system}.operator-tool);
 
-      devShell = forAllSystems
+      checks = forAllSystems (system: {
+        pre-commit-check = pre-commit-hooks.lib.${system}.run {
+          src = ./.;
+          hooks = {
+            nixpkgs-fmt.enable = true;
+            nix-linter.enable = true;
+            statix.enable = true;
+          };
+        };
+      });
+
+      devShells = forAllSystems
         (system:
           let
             pkgs = nixpkgsFor.${system};
           in
-          import ./devshell.nix { inherit pkgs; }
-        );
+          {
+            default =
+              pkgs.mkShell
+                {
+                  inherit (self.checks.${system}.pre-commit-check) shellHook;
+                  buildInputs = with pkgs; [
+                    go_1_18
+                    gotools
+                    golangci-lint
+                    gopls
+                    go-outline
+                    gopkgs
+                    pre-commit
+                  ];
+                };
+          });
     };
 }
-# }
+
