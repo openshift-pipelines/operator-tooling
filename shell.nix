@@ -1,2 +1,4 @@
 { system ? builtins.currentSystem }:
-(import ./. { inherit system; }).shellNix
+
+# Use flake.nix devshell, similar to "nix develop"
+(builtins.getFlake (toString ./.)).devShells.${system}.default
