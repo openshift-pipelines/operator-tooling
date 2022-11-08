@@ -3,9 +3,10 @@
 
   # Nixpkgs / NixOS version to use.
   inputs.nixpkgs.url = "nixpkgs/nixos-22.05"; # We could use nixos-unstable but.. why ?
+  inputs.nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
   inputs.pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
 
-  outputs = { self, nixpkgs, pre-commit-hooks }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, pre-commit-hooks }:
     let
 
       # Generate a user-friendly version number.
@@ -19,6 +20,17 @@
 
       # Nixpkgs instantiated for supported system types.
       nixpkgsFor = forAllSystems (system: import nixpkgs {
+        inherit system;
+        # Makes the config pure as well. See <nixpkgs>/top-level/impure.nix:
+        config = {
+          allowBroken = true;
+        };
+        overlays = [
+          # self.overlay
+        ];
+      });
+      # Nixpkgs-unstable instantiated for supported system types.
+      nixpkgsUnstableFor = forAllSystems (system: import nixpkgs-unstable {
         inherit system;
         # Makes the config pure as well. See <nixpkgs>/top-level/impure.nix:
         config = {
@@ -89,6 +101,7 @@
         (system:
           let
             pkgs = nixpkgsFor.${system};
+            pkgs-unstable = nixpkgsUnstableFor.${system};
           in
           {
             default =
@@ -103,7 +116,8 @@
                     go-outline
                     gopkgs
                     pre-commit
-                    revive
+                    # FIXME remove when 22.11 is released
+                    pkgs-unstable.revive
                   ];
                 };
           });
