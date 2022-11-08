@@ -9,7 +9,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-type upstream_sources struct {
+type upstreamSources struct {
 	Sources []source `json:"git"`
 }
 
@@ -27,7 +27,7 @@ type upstream_sources struct {
 type source struct {
 	Branch       string `json:"branch"`
 	Commit       string `json:"commit"`
-	Url          string `json:"url"`
+	URL          string `json:"url"`
 	Automerge    string `json:"automerge"`
 	UpdatePolicy string `json:"update_policy"`
 	// FIXME: support DestFormats
@@ -38,7 +38,7 @@ func generateUpstreamSources(filename string) error {
 	if err != nil {
 		return err
 	}
-	us := &upstream_sources{Sources: []source{}}
+	us := &upstreamSources{Sources: []source{}}
 	for _, component := range components {
 		url := "https://github.com/" + component.Github
 		branch := component.Version
@@ -67,7 +67,7 @@ func generateUpstreamSources(filename string) error {
 		source := source{
 			Automerge:    "never",
 			UpdatePolicy: "static",
-			Url:          url,
+			URL:          url,
 			Branch:       branch,
 			Commit:       commit,
 		}
