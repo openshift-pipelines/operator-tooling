@@ -103,6 +103,7 @@
                     go-outline
                     gopkgs
                     pre-commit
+                    revive
                   ];
                 };
           });
