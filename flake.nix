@@ -91,8 +91,8 @@
             statix.enable = true;
 
             # go
-            revive.enable = true;
-            govet.enable = true;
+            # revive.enable = true;
+            # govet.enable = true;
           };
         };
       });
