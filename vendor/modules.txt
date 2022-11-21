@@ -26,7 +26,7 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/acomagu/bufpipe v1.0.3
 ## explicit; go 1.12
 github.com/acomagu/bufpipe
-# github.com/cli/go-gh v0.1.2
+# github.com/cli/go-gh v1.0.0
 ## explicit; go 1.18
 github.com/cli/go-gh
 github.com/cli/go-gh/internal/api

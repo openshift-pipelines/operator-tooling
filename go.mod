@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/cli/go-gh v0.1.2
+	github.com/cli/go-gh v1.0.0
 	github.com/go-git/go-git/v5 v5.4.2
 	golang.org/x/sync v0.0.0-20220907140024-f12130a52804
 	sigs.k8s.io/yaml v1.3.0
