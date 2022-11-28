@@ -2,9 +2,12 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/go-git/go-git/v5"
 	gitconfig "github.com/go-git/go-git/v5/config"
+	// "github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/storage/memory"
 	"sigs.k8s.io/yaml"
 )
@@ -45,22 +48,55 @@ func generateUpstreamSources(filename string) error {
 		if branch == "nightly" {
 			branch = "main" // FIXME: we may want to use remote head here… but today we assume it's main
 		}
-		commit := ""
+		commitHash := ""
 
-		rem := git.NewRemote(memory.NewStorage(), &gitconfig.RemoteConfig{
+		repo, err := git.Init(memory.NewStorage(), nil)
+		if err != nil {
+			return err
+		}
+		rem, err := repo.CreateRemote(&gitconfig.RemoteConfig{
 			Name: "origin",
 			URLs: []string{url},
 		})
+		if err != nil {
+			return err
+		}
 		refs, err := rem.List(&git.ListOptions{})
 		if err != nil {
 			return err
 		}
+		fmt.Fprintf(os.Stderr, "Fetching %s : %s...\n", component.Github, branch)
 		for _, r := range refs {
 			if !r.Name().IsTag() && !r.Name().IsBranch() {
 				continue
 			}
 			if r.Name().Short() == branch {
-				commit = r.Hash().String()
+				commitHash = r.Hash().String()
+				if r.Name().IsTag() {
+					err = repo.Fetch(&git.FetchOptions{
+						RemoteName: "origin",
+					})
+					if err != nil {
+						return err
+					}
+					tags, err := repo.TagObjects()
+					if err != nil {
+						return err
+					}
+					err = tags.ForEach(func(t *object.Tag) error {
+						if t.Name == branch {
+							commit, err := t.Commit()
+							if err != nil {
+								return err
+							}
+							commitHash = commit.Hash.String()
+						}
+						return nil
+					})
+					if err != nil {
+						return err
+					}
+				}
 				break
 			}
 		}
@@ -69,7 +105,7 @@ func generateUpstreamSources(filename string) error {
 			UpdatePolicy: "static",
 			URL:          url,
 			Branch:       branch,
-			Commit:       commit,
+			Commit:       commitHash,
 		}
 		us.Sources = append(us.Sources, source)
 	}
