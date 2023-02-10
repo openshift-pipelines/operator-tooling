@@ -28,8 +28,8 @@ github.com/ProtonMail/go-crypto/openpgp/s2k
 # github.com/acomagu/bufpipe v1.0.3
 ## explicit; go 1.12
 github.com/acomagu/bufpipe
-# github.com/cli/go-gh v1.0.0
-## explicit; go 1.18
+# github.com/cli/go-gh v1.1.0
+## explicit; go 1.19
 github.com/cli/go-gh
 github.com/cli/go-gh/internal/api
 github.com/cli/go-gh/internal/git
@@ -193,7 +193,7 @@ golang.org/x/crypto/ssh
 golang.org/x/crypto/ssh/agent
 golang.org/x/crypto/ssh/internal/bcrypt_pbkdf
 golang.org/x/crypto/ssh/knownhosts
-# golang.org/x/net v0.2.0
+# golang.org/x/net v0.5.0
 ## explicit; go 1.17
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
@@ -202,7 +202,7 @@ golang.org/x/net/proxy
 # golang.org/x/sync v0.0.0-20220907140024-f12130a52804
 ## explicit
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.3.0
+# golang.org/x/sys v0.4.0
 ## explicit; go 1.17
 golang.org/x/sys/cpu
 golang.org/x/sys/execabs
@@ -211,7 +211,7 @@ golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/windows/registry
-# golang.org/x/term v0.2.0
+# golang.org/x/term v0.4.0
 ## explicit; go 1.17
 golang.org/x/term
 # gopkg.in/warnings.v0 v0.1.2
