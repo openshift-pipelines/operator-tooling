@@ -87,7 +87,7 @@
           src = ./.;
           hooks = {
             nixpkgs-fmt.enable = true;
-            nix-linter.enable = true;
+            # nix-linter.enable = true;
             statix.enable = true;
 
             # go
