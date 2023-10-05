@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/cli/go-gh v1.2.1
 	github.com/go-git/go-git/v5 v5.9.0
-	golang.org/x/sync v0.3.0
+	golang.org/x/sync v0.4.0
 	sigs.k8s.io/yaml v1.3.0
 )
 
