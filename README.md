@@ -1,3 +1,5 @@
+**This repository is deprecated, and has moved directly to [`tektoncd/operator`] (see [here](https://github.com/tektoncd/operator/tree/main/cmd/tool))**
+
 # `operator-tooling`
 
 This repository holds a set of commands to *ease* some OpenShift
